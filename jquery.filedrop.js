@@ -72,12 +72,6 @@
         files_count = 0,
         files;
 
-    $('#' + opts.fallback_id).css({
-      display: 'none',
-      width: 0,
-      height: 0
-    });
-
     this.on('drop', drop).on('dragstart', opts.dragStart).on('dragenter', dragEnter).on('dragover', dragOver).on('dragleave', dragLeave);
     $(document).on('drop', docDrop).on('dragenter', docEnter).on('dragover', docOver).on('dragleave', docLeave);
 
