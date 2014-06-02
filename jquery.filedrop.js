@@ -360,9 +360,6 @@
             newName = rename(file.name),
             mime = file.type;
 
-        if (opts.withCredentials) {
-          xhr.withCredentials = opts.withCredentials;
-        }
 
         var data = atob(e.target.result.split(',')[1]);
         if (typeof newName === "string") {
@@ -385,6 +382,11 @@
             xhr.open(opts.requestType, opts.url(), true);
         } else {
             xhr.open(opts.requestType, opts.url, true);
+        }
+        
+        // has to be after open() in IE 10 
+        if (opts.withCredentials) {
+          xhr.withCredentials = opts.withCredentials;
         }
 
         xhr.setRequestHeader('content-type', 'multipart/form-data; boundary=' + boundary);
