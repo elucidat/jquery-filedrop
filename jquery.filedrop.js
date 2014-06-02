@@ -138,7 +138,7 @@
       builder += boundary;
       builder += crlf;
       builder += 'Content-Disposition: form-data; name="' + (paramname||"") + '"';
-      builder += '; filename="' + filename + '"';
+      builder += '; filename="' + encodeURIComponent(filename) + '"';
       builder += crlf;
 
       builder += 'Content-Type: ' + mime;
@@ -216,7 +216,9 @@
         for(var fileIndex = files.length;fileIndex--;) {
           var allowedextension = false;
           for (i=0;i<opts.allowedfileextensions.length;i++){
-            if (files[fileIndex].name.substr(files[fileIndex].name.length-opts.allowedfileextensions[i].length) == opts.allowedfileextensions[i]) {
+            if (files[fileIndex].name.substr(files[fileIndex].name.length-opts.allowedfileextensions[i].length).toLowerCase()
+                    == opts.allowedfileextensions[i].toLowerCase()
+            ) {
               allowedextension = true;
             }
           }
@@ -393,6 +395,17 @@
           xhr.setRequestHeader(k, v);
         });
 
+          if(!xhr.sendAsBinary){
+              xhr.sendAsBinary = function(datastr) {
+                  function byteValue(x) {
+                      return x.charCodeAt(0) & 0xff;
+                  }
+                  var ords = Array.prototype.map.call(datastr, byteValue);
+                  var ui8a = new Uint8Array(ords);
+                  this.send(ui8a.buffer);
+              }
+          }
+          
         xhr.sendAsBinary(builder);
 
         global_progress[global_progress_index] = 0;
